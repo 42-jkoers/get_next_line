@@ -6,7 +6,7 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/07 23:52:12 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/13 13:59:14 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,51 @@
 #include <sys/select.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <stdbool.h>
 
 #include <stdio.h>
+#include <string.h>
 
-void	*ft_memcpy(void *dest, void *src, size_t n)
+ssize_t		ft_min(ssize_t a, ssize_t b)
+{
+	return (a < b ? a : b);
+}
+
+void	putstr(char *str)
+{
+	write(1, str, strlen(str));
+}
+
+void	putstr_cat(char *str, size_t size)
+{
+	while (size > 0)
+	{
+		size--;
+		if (*str == '\n')
+			putstr("\\n");
+		else 
+			write(1, str, 1);
+		str++;
+	}
+}
+
+void	writebuf(t_buf *fd)
+{
+	putstr("limit <");
+	putstr_cat(fd->data + fd->start, fd->size < 0 ? 0 : (size_t)fd->size);
+	putstr(">\n");
+	
+	putstr("full  <");
+	putstr_cat(fd->data, BUFF_SIZE);
+	putstr(">\n");
+}
+
+void	*ft_memcpy(void *dest, void *src, ssize_t n)
 {
 	unsigned char *d;
 	unsigned char *s;
 
-	if (dest == NULL || src == NULL)
+	if (dest == NULL || src == NULL || dest == src)
 		return (dest);
 	d = dest;
 	s = src;
@@ -38,102 +74,99 @@ void	*ft_memcpy(void *dest, void *src, size_t n)
 	return (dest);
 }
 
-ssize_t	strchr_i(char *str, char c, size_t len)
-{
-	ssize_t	i;
-
-	i = 0;
-	while (i < len)
-	{
-		if (str[i] == c)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-t_buf	*new_buf(ssize_t size)
+t_buf	*new_buf(size_t size)
 {
 	t_buf	*new_buf;
 
 	new_buf = malloc(sizeof(t_buf));
-	new_buf->content = malloc(size);
-	new_buf->size = size;
+	new_buf->data = malloc(size);
+	new_buf->size = 0;
+	new_buf->start = 0;
 	new_buf->next = NULL;
 	return (new_buf);
 }
 
-char 	*malloc_line(t_buf *fd, ssize_t *size)
+bool	found_end(t_buf *fd, ssize_t *total_size)
 {
-	size_t	total_size;
-	char	*result;
+	ssize_t	i;
 
-	total_size = 0;
-	while (fd->next != NULL)
+	if (fd == NULL)
+		return (false);
+	if (*total_size == 0)
 	{
-		total_size += fd->size;
-		fd = fd->next;
+		i = 0;
+		while (fd->data[i + fd->start] == '\n' && i < fd->size)
+			i++;
+		fd->start += i;
+		fd->size -= i;
 	}
-	*size = strchr_i((char *)(fd->content), '\n', fd->size);
-	if (*size == -1)
-		*size = fd->size;
-	total_size += *size;
-	result = malloc(total_size + 1);
-	if (result != NULL)
-		result[total_size] = '\0';
-	return (result);
+	i = 0;
+	while (i < fd->size)
+	{
+		if (fd->data[i + fd->start] == '\n')
+			return (true);
+		*total_size += 1;
+		i++;
+	}
+	return (false);
 }
 
-int		join(t_buf *fd, char **line)
+int		join(t_buf **fd, ssize_t total_size, char **line)
 {
-	size_t	i;
+	ssize_t	i;
 	t_buf	*tmp;
-	ssize_t	size;
-
+	
 	i = 0;
-	*line = malloc_line(fd, &size);			
-	while (fd->next != NULL)
+	if (total_size <= 0 || (*fd)->size < 0)
+		return (-1);
+	*line = malloc((size_t)(total_size + 1));
+	(*line)[total_size] = '\0';
+	while ((*fd)->next != NULL)
 	{
-		ft_memcpy(*line + i, fd->content, fd->size);
-		i += fd->size;
-		tmp = fd;
-		fd = fd->next;
-		free(tmp->content);
+		ft_memcpy(*line + i, (*fd)->data + (*fd)->start, ft_min(total_size, (*fd)->size));
+		i += ft_min(total_size, (*fd)->size);
+		tmp = *fd;
+		*fd = (*fd)->next;
+		free(tmp->data);
 		free(tmp);
 	}
-	ft_memcpy(*line + i, fd->content, size);
-	while (size < fd->size && ((char *)(fd->content))[size] == '\n')
-		size++;
-	ft_memcpy(fd->content, fd->content + size, fd->size - size);
-	fd->size = fd->size - size;
-	fd->next = NULL;
-	return (fd->size != size); 
+	writebuf(*fd);
+	ft_memcpy(*line + i, (*fd)->data + (*fd)->start, ft_min(total_size - i, (*fd)->size));
+	i = i == 0 ? total_size : total_size - i;
+	while (i < (*fd)->size && (*fd)->data[i + (*fd)->start] == '\n')
+		i++;
+	(*fd)->start = i;
+	(*fd)->size = (*fd)->size - i;
+	(*fd)->next = NULL;
+	putstr("out  <");
+	putstr_cat(*line, strlen(*line));
+	putstr(">\n");
+	writebuf(*fd);
+	return (1); 
 }
 
 int		get_next_line(const int fd, char **line)
 {
 	static t_buf	*fds[50];
 	t_buf			*cur;
-	ssize_t			read_len;
-
-	if (fd < 0)
+	ssize_t			total_size;
+	
+	putstr("\n\nSTART\n");
+	if (fd < 0 || BUFF_SIZE < 0)
 		return (-1);
+	total_size = 0;
 	if (!fds[fd])
-		fds[fd] = new_buf(BUFF_SIZE);
-	else if (strchr_i(fds[fd]->content, '\n', fds[fd]->size) != -1)
-		return (join(fds[fd], line));
+		fds[fd] = new_buf(0);
+	else if (found_end(&fds[fd], &total_size))
+		return (join(fds[fd], total_size, line));
 	cur = fds[fd];
-	read_len = 42;
-	while (read_len > 0)
+	while (cur)
 	{
-		read_len = read(fd, cur->content, BUFF_SIZE);
-		cur->size = read_len;
-		if (read_len != BUFF_SIZE)
-			return (join(fds[fd], line));
-		if (strchr_i((char *)cur->content, '\n', cur->size) != -1)
-			return (join(fds[fd], line));
 		cur->next = new_buf(BUFF_SIZE);
 		cur = cur->next;
+		cur->size = read(fd, cur->data, BUFF_SIZE);
+		if (found_end(cur, &total_size) || cur->size != BUFF_SIZE)
+			return (join(&fds[fd], total_size, line));
 	}
 	return (-1);
 }
@@ -148,8 +181,7 @@ int		main(void)
 	i = 0;
 	while (get_next_line(fd, &line) == 1 && i < 10)
 	{
-		printf("<%s>\n", line);
-		// free(*line);
+		// free(line);
 		i++;
 	}
 	return 0;

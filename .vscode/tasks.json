@@ -5,6 +5,10 @@
             "label": "C/C++: gcc build active file",
             "command": "/usr/bin/gcc",
             "args": [
+                "-Wall",
+                "-Wextra",
+                "-Wconversion",
+                "-Werror",
                 "-g",
                 "${file}",
                 "-o",

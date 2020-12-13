@@ -6,7 +6,7 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/13 13:59:14 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/13 14:12:21 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@ int		join(t_buf **fd, ssize_t total_size, char **line)
 		free(tmp->data);
 		free(tmp);
 	}
-	writebuf(*fd);
 	ft_memcpy(*line + i, (*fd)->data + (*fd)->start, ft_min(total_size - i, (*fd)->size));
 	i = i == 0 ? total_size : total_size - i;
 	while (i < (*fd)->size && (*fd)->data[i + (*fd)->start] == '\n')
@@ -138,10 +137,6 @@ int		join(t_buf **fd, ssize_t total_size, char **line)
 	(*fd)->start = i;
 	(*fd)->size = (*fd)->size - i;
 	(*fd)->next = NULL;
-	putstr("out  <");
-	putstr_cat(*line, strlen(*line));
-	putstr(">\n");
-	writebuf(*fd);
 	return (1); 
 }
 
@@ -151,14 +146,14 @@ int		get_next_line(const int fd, char **line)
 	t_buf			*cur;
 	ssize_t			total_size;
 	
-	putstr("\n\nSTART\n");
+	// putstr("\n\nSTART\n");
 	if (fd < 0 || BUFF_SIZE < 0)
 		return (-1);
 	total_size = 0;
 	if (!fds[fd])
 		fds[fd] = new_buf(0);
-	else if (found_end(&fds[fd], &total_size))
-		return (join(fds[fd], total_size, line));
+	else if (found_end(fds[fd], &total_size))
+		return (join(&fds[fd], total_size, line));
 	cur = fds[fd];
 	while (cur)
 	{
@@ -179,8 +174,10 @@ int		main(void)
 
 	fd = open("test.txt", O_RDONLY);
 	i = 0;
+	setvbuf(stdout, NULL, _IONBF, 0);
 	while (get_next_line(fd, &line) == 1 && i < 10)
 	{
+		printf("<%s>\n", line);
 		// free(line);
 		i++;
 	}

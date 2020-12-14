@@ -6,13 +6,11 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/13 17:45:29 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 19:34:26 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:44:13 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <unistd.h>
-#include <stddef.h>
 #include <stdlib.h>
 
 void	*ft_memcpy(void *dest, void *src, size_t n)

@@ -6,13 +6,12 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:29:25 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:44:39 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <unistd.h>
-#include <stddef.h>
 #include <sys/select.h>
 #include <stdlib.h>
 #include <stdbool.h>

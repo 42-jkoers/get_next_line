@@ -6,7 +6,7 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:15:15 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:20:57 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,27 +94,3 @@ int		get_next_line(const int fd, char **line)
 	}
 	return (error(&fds[fd]));
 }
-
-// deletus {
-	
-// #include <stdio.h>
-// int		main(void)
-// {
-// 	int		fd;
-// 	char	*line;
-// 	int		i;
-
-// 	fd = open("test.txt", O_RDONLY);
-// 	i = 0;
-// 	setvbuf(stdout, NULL, _IONBF, 0);
-// 	while (get_next_line(fd, &line) >= 0 && i < 10)
-// 	{
-// 		printf("<%s>\n", line);
-// 		free(line);
-// 		i++;
-// 	}
-// 	// while (1);
-// 	return 0;
-// }
-
-// }

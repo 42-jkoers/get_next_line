@@ -6,7 +6,7 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:20:57 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:25:16 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <sys/select.h>
 #include <stdlib.h>
 #include <fcntl.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 static int	error(t_buf **fd)
@@ -46,7 +45,7 @@ static bool	found_end(t_buf *fd, size_t *total_size)
 static int	join(t_buf **fd, size_t total_size, char **line)
 {
 	size_t	i;
-	
+
 	i = 0;
 	*line = malloc((size_t)(total_size + 1));
 	if (*line == NULL)
@@ -63,15 +62,15 @@ static int	join(t_buf **fd, size_t total_size, char **line)
 	(*fd)->size -= (total_size - i) + 1;
 	if ((*fd)->size < 0)
 		shift(fd);
-	return (*fd ? 1 : 0); 
+	return (*fd ? 1 : 0);
 }
 
-int		get_next_line(const int fd, char **line)
+int			get_next_line(const int fd, char **line)
 {
 	static t_buf	*fds[FD_SETSIZE];
 	t_buf			*cur;
 	size_t			total_size;
-	
+
 	if (fd < 0 || BUFFER_SIZE <= 0 || line == NULL)
 		return (error(fd < 0 ? NULL : &fds[fd]));
 	total_size = 0;

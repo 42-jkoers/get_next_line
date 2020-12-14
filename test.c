@@ -6,11 +6,11 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/14 20:21:28 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:22:18 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:26:15 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>	
+#include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -29,6 +29,5 @@ int		main(void)
 		free(line);
 		i++;
 	}
-	// while (1);
-	return 0;
+	return (0);
 }

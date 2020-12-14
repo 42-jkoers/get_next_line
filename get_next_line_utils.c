@@ -6,16 +6,14 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/13 17:45:29 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/13 17:46:53 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 19:34:26 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
 #include <unistd.h>
-
-ssize_t		ft_min(ssize_t a, ssize_t b)
-{
-	return (a < b ? a : b);
-}
+#include <stddef.h>
+#include <stdlib.h>
 
 void	*ft_memcpy(void *dest, void *src, size_t n)
 {
@@ -34,4 +32,31 @@ void	*ft_memcpy(void *dest, void *src, size_t n)
 		n--;
 	}
 	return (dest);
+}
+
+void	shift(t_buf **fd)
+{
+	t_buf *next;
+
+	if (*fd == NULL)
+		return ;
+	next = (*fd)->next;
+	if ((*fd)->data)
+		free((*fd)->data);
+	free(*fd);
+	*fd = next;
+}
+
+t_buf	*new_buf(size_t size)
+{
+	t_buf	*new_buf;
+
+	new_buf = malloc(sizeof(t_buf));
+	if (new_buf == NULL)
+		return (NULL);
+	new_buf->data = malloc(size);
+	new_buf->size = 0;
+	new_buf->start = 0;
+	new_buf->next = NULL;
+	return (new_buf);
 }

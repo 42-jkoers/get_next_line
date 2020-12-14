@@ -6,15 +6,20 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:29:56 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/13 13:37:49 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:01:13 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 6
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE -100
+# endif
 # include <stddef.h>
 # include <unistd.h>
+
+int		get_next_line(int fd, char **line);
 
 typedef struct		s_buf
 {
@@ -24,6 +29,8 @@ typedef struct		s_buf
 	struct s_buf	*next;
 }					t_buf;
 
-int		get_next_line(int fd, char **line);
+void	*ft_memcpy(void *dest, void *src, size_t n);
+void	shift(t_buf **fd);
+t_buf	*new_buf(size_t size);
 
 #endif

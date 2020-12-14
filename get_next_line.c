@@ -6,7 +6,7 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:00:44 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:15:15 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 
 static int	error(t_buf **fd)
 {
+	if (fd == NULL)
+		return (-1);
 	while (*fd != NULL)
 		shift(fd);
 	return (-1);

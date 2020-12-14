@@ -6,12 +6,11 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/13 17:45:29 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:43:29 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/14 20:45:17 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <stddef.h>
 #include <stdlib.h>
 
 void	*ft_memcpy(void *dest, void *src, size_t n)

@@ -6,7 +6,7 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/01 13:31:41 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:44:39 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/22 23:00:31 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	join(t_buf **fd, size_t total_size, char **line)
 	return (*fd ? 1 : 0);
 }
 
-int			get_next_line(const int fd, char **line)
+int			ft_get_next_line(const int fd, char **line)
 {
 	static t_buf	*fds[FD_SETSIZE];
 	t_buf			*cur;

@@ -6,31 +6,12 @@
 /*   By: jkoers <jkoers@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/12/13 17:45:29 by jkoers        #+#    #+#                 */
-/*   Updated: 2020/12/14 20:44:13 by jkoers        ########   odam.nl         */
+/*   Updated: 2020/12/22 23:00:10 by jkoers        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdlib.h>
-
-void	*ft_memcpy(void *dest, void *src, size_t n)
-{
-	unsigned char *d;
-	unsigned char *s;
-
-	if (dest == NULL || src == NULL || dest == src)
-		return (dest);
-	d = dest;
-	s = src;
-	while (n > 0)
-	{
-		*d = *s;
-		d++;
-		s++;
-		n--;
-	}
-	return (dest);
-}
 
 void	shift(t_buf **fd)
 {
